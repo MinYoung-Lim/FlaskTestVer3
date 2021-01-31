@@ -66,9 +66,35 @@ public class MainActivity extends AppCompatActivity {
         btnImageSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // static값 초기화
+                result1 = new String[]{"", "", "", "", ""};
+                result2 = new String[]{"", "", "", "", ""};
+                result3 = new String[]{"", "", "", "", ""};
+                result4 = new String[]{"", "", "", "", ""};
+                result5 = new String[]{"", "", "", "", ""};
+                result6 = new String[]{"", "", "", "", ""};
+                result7 = new String[]{"", "", "", "", ""};
+                result8 = new String[]{"", "", "", "", ""};
+                NumOfClass=0;
+
+
+
                 FileUploadUtils.send2Server(tempSelectFile);
 
-                Handler mHandler = new Handler();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                    }
+                }).start();
+                try {
+                    Thread.sleep(1500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+               Handler mHandler = new Handler();
                 mHandler.postDelayed(new Runnable()  {
                     public void run() {
                         // 시간 지난 후 실행할 코딩
@@ -236,7 +262,10 @@ public class MainActivity extends AppCompatActivity {
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        //String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        String path = MediaStore.Images.Media.insertImage(
+                inContext.getContentResolver(), inImage, "IMG_" + System.currentTimeMillis(), null
+        );
         return Uri.parse(path);
     }
 

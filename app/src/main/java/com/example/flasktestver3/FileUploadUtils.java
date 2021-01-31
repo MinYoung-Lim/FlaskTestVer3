@@ -25,6 +25,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import static android.os.Looper.getMainLooper;
 
@@ -41,8 +42,7 @@ public class FileUploadUtils {
     static int NumOfClass = 0;  // 추출할 라벨&좌표의 개수 ( = 리사이클러뷰의 아이템개수 )
 
 
-
-    public static void send2Server(File file){
+    public static void send2Server(File file) {
         RequestBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("image", file.getName(), RequestBody.create(MediaType.parse("image/*"), file))
@@ -55,6 +55,111 @@ public class FileUploadUtils {
                 .build();
 
         OkHttpClient client = new OkHttpClient();
+
+        /*
+        try {
+            Response response = client.newCall(request).execute();
+            if (response.isSuccessful()) {
+                ResponseBody responseBody = response.body();
+                if (responseBody != null) {
+
+                    JSONObject jsonObject = new JSONObject(responseBody.string());
+                    String Response = jsonObject.getString("response");
+                    JSONArray jsonArray1 = new JSONArray(Response);
+                    JSONObject jsonObject1 = jsonArray1.getJSONObject(0);
+                    String detections = jsonObject1.getString("detections");
+                    JSONArray jsonArray = new JSONArray(detections);
+
+                    for (int i = 0; i < jsonArray.length(); i++) {
+
+                        NumOfClass = jsonArray.length();
+
+                        JSONObject subJSONObject = jsonArray.getJSONObject(i);
+                        String boxes = subJSONObject.getString("boxes");
+                        String Class = subJSONObject.getString("class");
+
+                        //Log.e("boxes", boxes);
+                        //Log.e("class", Class);
+
+                        // 배열로 만들기
+
+                        StringBuffer boxesBuffer = new StringBuffer(boxes);
+                        boxesBuffer.deleteCharAt(boxes.length() - 1);
+                        boxesBuffer.deleteCharAt(0);
+
+                        String boxesString = boxesBuffer.toString();
+
+                        Log.e("boxesString", boxesString);
+
+                        String[] array = boxesString.split("\\s+");
+
+                        switch (i) {
+                            case 0:
+                                makeResultArray(result1, array, Class);
+                                break;
+                            case 1:
+                                makeResultArray(result2, array, Class);
+                                break;
+                            case 2:
+                                makeResultArray(result3, array, Class);
+                                break;
+                            case 3:
+                                makeResultArray(result4, array, Class);
+                                break;
+                            case 4:
+                                makeResultArray(result5, array, Class);
+                                break;
+                            case 5:
+                                makeResultArray(result6, array, Class);
+                                break;
+                            case 6:
+                                makeResultArray(result7, array, Class);
+                                break;
+                            case 7:
+                                makeResultArray(result8, array, Class);
+                                break;
+                            default:
+                                Log.e("탐지", "개인정보가 인식되지 않았습니다");
+                                break;
+
+                        }
+
+                    }
+
+                    // result 1~8 배열 출력
+                    for (int k = 0; k < result1.length; k++)
+                        Log.e("result1", result1[k]);
+
+                    for (int k = 0; k < result2.length; k++)
+                        Log.e("result2", result2[k]);
+
+                    for (int k = 0; k < result3.length; k++)
+                        Log.e("result3", result3[k]);
+
+                    for (int k = 0; k < result4.length; k++)
+                        Log.e("result4", result4[k]);
+
+                    for (int k = 0; k < result5.length; k++)
+                        Log.e("result5", result5[k]);
+
+                    for (int k = 0; k < result6.length; k++)
+                        Log.e("result6", result6[k]);
+
+                    for (int k = 0; k < result7.length; k++)
+                        Log.e("result7", result7[k]);
+
+                    for (int k = 0; k < result8.length; k++)
+                        Log.e("result8", result8[k]);
+
+
+                } else {
+                    Log.e("Responsebody", "Failure()");
+                }
+            }
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }*/
+
 
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -182,6 +287,14 @@ public class FileUploadUtils {
 
             }
         });
+    }
+
+    private static void makeResultArray(String[] result, String[] array, String Class) {
+        result[0] = Class;
+        for (int j = 0; j < 4; j++) {
+            result[j + 1] = array[j];
+            //Log.e("[" + j + "]" ,array[j]);
+        }
     }
 }
 
